@@ -129,9 +129,9 @@ function MinimalHeader() {
       transition={{ duration: 0.5 }}
     >
       <nav className="px-4 py-3 flex items-center gap-2">
-        <div className="flex items-center gap-1 bg-neutral-900/60 backdrop-blur-md rounded-md p-1">
+        <div className="flex items-center gap-1 bg-white/40 backdrop-blur-xl rounded-full p-1 border border-white/60 shadow-sm">
           <button
-            className="px-3 py-1.5 text-sm font-semibold rounded cursor-pointer text-black/70 hover:text-black transition-all"
+            className="px-3 py-1.5 text-sm font-semibold rounded cursor-pointer text-black/40 hover:text-black/70 transition-all"
             onClick={() => {
               setView("default");
               window.scrollTo({ top: 0, behavior: "smooth" });
@@ -143,7 +143,7 @@ function MinimalHeader() {
           </button>
 
           <button
-            className="px-3 py-1.5 text-sm font-semibold rounded cursor-pointer text-orange-500 transition-all"
+            className="px-3 py-1.5 text-sm font-semibold rounded-full cursor-pointer text-orange-500 bg-white/60 transition-all"
             onClick={() => {
               setView("artsy");
               window.scrollTo({ top: 0, behavior: "smooth" });
@@ -155,7 +155,7 @@ function MinimalHeader() {
           </button>
 
           <button
-            className="px-3 py-1.5 text-sm font-semibold rounded cursor-pointer text-black/70 hover:text-black transition-all"
+            className="px-3 py-1.5 text-sm font-semibold rounded cursor-pointer text-black/40 hover:text-black/70 transition-all"
             onClick={() => {
               setView("brutalist");
               window.scrollTo({ top: 0, behavior: "smooth" });
