@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useLayoutEffect } from "react";
 import { motion } from "framer-motion";
 import { useView } from "@/components/ViewProvider";
 import { useForm } from "react-hook-form";
@@ -106,30 +106,74 @@ const skills = [
   { name: "AI Prompting", icon: TbCode, color: "#412991" },
 ];
 
+/* --- Staggered card slam variants --- */
+const cardSlamVariants = {
+  hidden: { opacity: 0, y: 60, rotate: -2 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    rotate: 0,
+    transition: {
+      type: "spring",
+      stiffness: 500,
+      damping: 15,
+      delay: i * 0.08,
+    },
+  }),
+};
+
+const skillSlamVariants = {
+  hidden: { opacity: 0, y: 40, scale: 0.85 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      type: "spring",
+      stiffness: 500,
+      damping: 15,
+      delay: i * 0.03,
+    },
+  }),
+};
+
 function AboutSection() {
   return (
     <div style={{ width: "clamp(320px, 85vw, 960px)" }}>
-      <h2 className="brutalist-heading">About Me</h2>
+      <h2 className="brutalist-heading brutalist-glitch" data-text="About Me">About Me</h2>
       <div className="grid md:grid-cols-2 gap-6 mb-8">
-        <div className="brutalist-card">
+        <motion.div
+          className="brutalist-card"
+          variants={cardSlamVariants}
+          initial="hidden"
+          animate="visible"
+          custom={0}
+        >
           <h3 className="text-xl font-bold mb-4" style={{ fontFamily: "'Courier New', monospace" }}>My Journey</h3>
           <div className="space-y-3 leading-relaxed" style={{ fontFamily: "'Courier New', monospace" }}>
             <p>I believe in shipping fast, learning constantly, and building things that matter.</p>
             <p>I'm a Computer Science & Business Administration graduate from Northeastern University, bringing technical expertise and business understanding to every project I build.</p>
             <p>I enjoy working closely with clients to understand their goals, translate ideas into solutions, and deliver work that's both technically sound and easy to maintain.</p>
           </div>
-        </div>
+        </motion.div>
         <div className="grid grid-cols-2 gap-4">
-          {highlights.map((item) => {
+          {highlights.map((item, i) => {
             const Icon = item.icon;
             return (
-              <div key={item.title} className="brutalist-card brutalist-hoverable">
+              <motion.div
+                key={item.title}
+                className="brutalist-card brutalist-hoverable"
+                variants={cardSlamVariants}
+                initial="hidden"
+                animate="visible"
+                custom={i + 1}
+              >
                 <div className="w-10 h-10 flex items-center justify-center mb-3 border-2 border-black" style={{ borderRadius: "12px" }}>
                   <Icon className="w-5 h-5" />
                 </div>
                 <h4 className="font-bold text-sm mb-1" style={{ fontFamily: "'Courier New', monospace" }}>{item.title}</h4>
                 <p className="text-xs" style={{ fontFamily: "'Courier New', monospace" }}>{item.description}</p>
-              </div>
+              </motion.div>
             );
           })}
         </div>
@@ -145,7 +189,7 @@ function ProjectsSection() {
 
   return (
     <div style={{ width: "clamp(320px, 85vw, 960px)" }}>
-      <h2 className="brutalist-heading">Featured Projects</h2>
+      <h2 className="brutalist-heading brutalist-glitch" data-text="Featured Projects">Featured Projects</h2>
       {isLoading ? (
         <div className="grid md:grid-cols-2 gap-6">
           {[1, 2].map((i) => (
@@ -158,8 +202,16 @@ function ProjectsSection() {
         </div>
       ) : projects && projects.length > 0 ? (
         <div className="grid md:grid-cols-2 gap-6">
-          {projects.map((project) => (
-            <div key={project.id} className="brutalist-card brutalist-hoverable" data-testid={`brutalist-card-project-${project.id}`}>
+          {projects.map((project, i) => (
+            <motion.div
+              key={project.id}
+              className="brutalist-card brutalist-hoverable"
+              data-testid={`brutalist-card-project-${project.id}`}
+              variants={cardSlamVariants}
+              initial="hidden"
+              animate="visible"
+              custom={i}
+            >
               {project.imageUrl && (
                 <div className="overflow-hidden border-2 border-black mb-4" style={{ borderRadius: "8px" }}>
                   <img
@@ -207,7 +259,7 @@ function ProjectsSection() {
                   </a>
                 )}
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       ) : (
@@ -223,21 +275,31 @@ function ProjectsSection() {
 function SkillsSection() {
   return (
     <div style={{ width: "clamp(320px, 85vw, 960px)" }}>
-      <h2 className="brutalist-heading">Skills & Technologies</h2>
+      <h2 className="brutalist-heading brutalist-glitch" data-text="Skills & Technologies">Skills & Technologies</h2>
       <p className="text-center mb-8" style={{ fontFamily: "'Courier New', monospace" }}>
         The technologies and tools I use to bring ideas to life.
       </p>
       <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-4">
-        {[...technologies, ...skills].map((tech) => {
+        {[...technologies, ...skills].map((tech, i) => {
           const Icon = tech.icon;
           return (
-            <div
+            <motion.div
               key={tech.name}
               className="flex flex-col items-center gap-2 p-3 brutalist-card brutalist-hoverable"
+              variants={skillSlamVariants}
+              initial="hidden"
+              animate="visible"
+              custom={i}
+              whileHover={{
+                scale: 1.15,
+                rotate: [0, -5, 5, -3, 0],
+                transition: { rotate: { duration: 0.4 }, scale: { duration: 0.15 } },
+              }}
+              whileTap={{ scale: 0.9 }}
             >
               <Icon className="w-8 h-8" style={{ color: tech.color }} />
               <span className="text-xs text-center font-bold" style={{ fontFamily: "'Courier New', monospace" }}>{tech.name}</span>
-            </div>
+            </motion.div>
           );
         })}
       </div>
@@ -281,12 +343,18 @@ function ContactSection() {
 
   return (
     <div style={{ width: "clamp(320px, 80vw, 620px)" }}>
-      <h2 className="brutalist-heading">Let's Connect</h2>
+      <h2 className="brutalist-heading brutalist-glitch" data-text="Let's Connect">Let's Connect</h2>
       <p className="text-center mb-4" style={{ fontFamily: "'Courier New', monospace" }}>
         Have a question or want to work together? Drop me a message.
       </p>
       <div>
-        <div className="brutalist-card">
+        <motion.div
+          className="brutalist-card"
+          variants={cardSlamVariants}
+          initial="hidden"
+          animate="visible"
+          custom={0}
+        >
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid md:grid-cols-2 gap-4">
               <div>
@@ -345,7 +413,7 @@ function ContactSection() {
               )}
             </button>
           </form>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
@@ -359,6 +427,34 @@ export default function HomeBrutalist() {
   const [phase, setPhase] = useState<"visible" | "exiting" | "resizing" | "entering">("visible");
   const contentRef = useRef<HTMLDivElement>(null);
   const { setView } = useView();
+
+  /* --- Sliding tab indicator refs/state --- */
+  const navContainerRef = useRef<HTMLDivElement>(null);
+  const navBtnRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
+
+  const updateIndicator = useCallback((sectionId: SectionId) => {
+    const btn = navBtnRefs.current[sectionId];
+    const container = navContainerRef.current;
+    if (btn && container) {
+      const containerRect = container.getBoundingClientRect();
+      const btnRect = btn.getBoundingClientRect();
+      setIndicatorStyle({
+        left: btnRect.left - containerRect.left,
+        width: btnRect.width,
+      });
+    }
+  }, []);
+
+  useLayoutEffect(() => {
+    updateIndicator(pendingSection ?? activeSection);
+  }, [activeSection, pendingSection, updateIndicator]);
+
+  useEffect(() => {
+    const handleResize = () => updateIndicator(pendingSection ?? activeSection);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [activeSection, pendingSection, updateIndicator]);
 
   const handleTabClick = useCallback((id: SectionId) => {
     if (id === activeSection || phase !== "visible") return;
@@ -407,6 +503,101 @@ export default function HomeBrutalist() {
   return (
     <div className="brutalist-page">
       <style>{`
+        /* ==================== */
+        /* 1. SCANLINE + NOISE  */
+        /* ==================== */
+        .brutalist-scanlines {
+          position: fixed;
+          inset: 0;
+          z-index: 9999;
+          pointer-events: none;
+          background: repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 2px,
+            rgba(0, 0, 0, 0.03) 2px,
+            rgba(0, 0, 0, 0.03) 4px
+          );
+        }
+        .brutalist-noise {
+          position: fixed;
+          inset: 0;
+          z-index: 9998;
+          pointer-events: none;
+          opacity: 0.04;
+        }
+        @keyframes grain {
+          0%, 100% { transform: translate(0, 0); }
+          10% { transform: translate(-5%, -10%); }
+          20% { transform: translate(-15%, 5%); }
+          30% { transform: translate(7%, -25%); }
+          40% { transform: translate(-5%, 25%); }
+          50% { transform: translate(-15%, 10%); }
+          60% { transform: translate(15%, 0%); }
+          70% { transform: translate(0%, 15%); }
+          80% { transform: translate(3%, 35%); }
+          90% { transform: translate(-10%, 10%); }
+        }
+        .brutalist-noise svg {
+          width: 200%;
+          height: 200%;
+          animation: grain 0.8s steps(6) infinite;
+        }
+
+        /* ==================== */
+        /* 2. GLITCH HEADINGS   */
+        /* ==================== */
+        @keyframes glitch {
+          0% { text-shadow: 2px 0 #ff006e, -2px 0 #00f0ff; }
+          20% { text-shadow: -2px 0 #ff006e, 2px 0 #00f0ff; }
+          40% { text-shadow: 2px -1px #ff006e, -2px 1px #00f0ff; }
+          60% { text-shadow: -1px 2px #ff006e, 1px -2px #00f0ff; }
+          80% { text-shadow: 1px 0 #ff006e, -1px 0 #00f0ff; }
+          100% { text-shadow: 0 0 transparent, 0 0 transparent; }
+        }
+        .brutalist-glitch {
+          position: relative;
+          animation: glitch 0.6s ease-out forwards;
+        }
+        .brutalist-glitch:hover {
+          animation: glitch 0.4s ease-out forwards;
+        }
+
+        /* ==================== */
+        /* 3. MARQUEE TICKER    */
+        /* ==================== */
+        @keyframes marquee-scroll {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .brutalist-marquee {
+          overflow: hidden;
+          background: #000;
+          border-top: 3px solid #000;
+          border-bottom: 3px solid #000;
+          padding: 6px 0;
+          margin-bottom: 16px;
+          width: 100%;
+        }
+        .brutalist-marquee-inner {
+          display: flex;
+          white-space: nowrap;
+          animation: marquee-scroll 12s linear infinite;
+          width: max-content;
+        }
+        .brutalist-marquee-text {
+          font-family: 'Courier New', monospace;
+          font-weight: 900;
+          font-size: 14px;
+          color: rgb(255, 106, 0);
+          text-transform: uppercase;
+          letter-spacing: 2px;
+          padding: 0 24px;
+        }
+
+        /* ==================== */
+        /* BASE STYLES          */
+        /* ==================== */
         .brutalist-page {
           background-color: rgb(224, 224, 224);
           min-height: 100vh;
@@ -435,16 +626,33 @@ export default function HomeBrutalist() {
           background: #fff;
           color: #000;
           border-radius: 6px;
-          transition: all 0.2s;
+          transition: all 0.15s;
         }
         .brutalist-view-btn:hover {
+          transform: translateY(2px);
+          box-shadow: 0 0 0 #000;
+        }
+        .brutalist-view-btn:not(:hover) {
           box-shadow: 3px 3px 0px #000;
-          transform: translate(-1px, -1px);
         }
         .brutalist-view-btn.active {
           background: rgb(255, 106, 0);
           color: #fff;
           box-shadow: 3px 3px 0px #000;
+        }
+        .brutalist-view-btn.active:hover {
+          transform: translateY(2px);
+          box-shadow: 0 0 0 #000;
+        }
+
+        /* Nav button wrapper for sliding indicator */
+        .brutalist-nav-wrapper {
+          position: relative;
+          display: flex;
+          gap: 6px;
+          flex-wrap: wrap;
+          justify-content: center;
+          margin-bottom: 16px;
         }
         .brutalist-nav-btn {
           padding: 10px 24px;
@@ -453,19 +661,32 @@ export default function HomeBrutalist() {
           font-family: 'Courier New', monospace;
           cursor: pointer;
           border: 2px solid #000;
-          background: #fff;
+          background: transparent;
           color: #000;
-          transition: all 0.2s;
+          transition: color 0.2s;
           border-radius: 6px;
-        }
-        .brutalist-nav-btn:hover {
-          box-shadow: 3px 3px 0px #000;
-          transform: translate(-1px, -1px);
+          position: relative;
+          z-index: 1;
         }
         .brutalist-nav-btn.active {
-          background: rgb(255, 106, 0);
           color: #fff;
+        }
+        .brutalist-nav-indicator {
+          position: absolute;
+          top: 0;
+          height: 100%;
+          background: rgb(255, 106, 0);
+          border: 2px solid #000;
+          border-radius: 6px;
           box-shadow: 3px 3px 0px #000;
+          z-index: 0;
+        }
+        .brutalist-nav-center {
+          display: flex;
+          gap: 6px;
+          flex-wrap: wrap;
+          justify-content: center;
+          margin-bottom: 16px;
         }
         .brutalist-main {
           flex: 1;
@@ -475,13 +696,6 @@ export default function HomeBrutalist() {
           align-items: center;
           justify-content: center;
           overflow-y: auto;
-        }
-        .brutalist-nav-center {
-          display: flex;
-          gap: 6px;
-          flex-wrap: wrap;
-          justify-content: center;
-          margin-bottom: 16px;
         }
         .brutalist-body-container {
           background: #fff;
@@ -504,12 +718,23 @@ export default function HomeBrutalist() {
           box-shadow: 4px 4px 0px #000;
           border-radius: 8px;
         }
+
+        /* ==================== */
+        /* 5. AGGRESSIVE HOVERS */
+        /* ==================== */
+        @keyframes shake {
+          0%, 100% { transform: translate(-2px, -2px) skewX(-1deg); }
+          25% { transform: translate(-3px, -1px) skewX(-1deg); }
+          50% { transform: translate(-1px, -3px) skewX(-1deg); }
+          75% { transform: translate(-3px, -2px) skewX(-1deg); }
+        }
         .brutalist-hoverable {
-          transition: all 0.2s;
+          transition: all 0.15s;
         }
         .brutalist-hoverable:hover {
-          box-shadow: 8px 8px 0px #000;
-          transform: translate(-2px, -2px);
+          box-shadow: 12px 12px 0px #000;
+          transform: translate(-2px, -2px) skewX(-1deg);
+          animation: shake 0.3s ease-in-out;
         }
         .brutalist-label {
           display: block;
@@ -542,6 +767,8 @@ export default function HomeBrutalist() {
           margin-top: 4px;
           font-family: 'Courier New', monospace;
         }
+
+        /* Buttons: slam-down press effect */
         .brutalist-btn {
           width: 100%;
           padding: 12px;
@@ -552,12 +779,18 @@ export default function HomeBrutalist() {
           font-weight: bold;
           font-family: 'Courier New', monospace;
           cursor: pointer;
-          transition: all 0.2s;
+          transition: all 0.1s;
           border-radius: 0;
-        }
-        .brutalist-btn:hover {
           box-shadow: 4px 4px 0px #000;
           transform: translate(-2px, -2px);
+        }
+        .brutalist-btn:hover {
+          box-shadow: 0 0 0 #000;
+          transform: translate(0, 0);
+        }
+        .brutalist-btn:active {
+          box-shadow: 0 0 0 #000;
+          transform: translate(2px, 2px);
         }
         .brutalist-btn:disabled {
           opacity: 0.6;
@@ -574,21 +807,38 @@ export default function HomeBrutalist() {
           font-weight: bold;
           font-family: 'Courier New', monospace;
           cursor: pointer;
-          transition: all 0.2s;
+          transition: all 0.1s;
           text-decoration: none;
           border-radius: 4px;
-        }
-        .brutalist-btn-sm:hover {
           box-shadow: 3px 3px 0px #000;
           transform: translate(-1px, -1px);
         }
+        .brutalist-btn-sm:hover {
+          box-shadow: 0 0 0 #000;
+          transform: translate(0, 0);
+        }
+        .brutalist-btn-sm:active {
+          transform: translate(1px, 1px);
+        }
       `}</style>
 
+      {/* === 1. Scanline + Noise Overlay === */}
+      <div className="brutalist-scanlines" />
+      <div className="brutalist-noise">
+        <svg>
+          <filter id="brutalist-noise-filter">
+            <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="4" stitchTiles="stitch" />
+          </filter>
+          <rect width="100%" height="100%" filter="url(#brutalist-noise-filter)" />
+        </svg>
+      </div>
+
+      {/* === 2. Dramatic Page Load — Header slams down === */}
       <motion.header
         className="brutalist-header"
-        initial={{ y: -40, opacity: 0 }}
+        initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
+        transition={{ type: "spring", stiffness: 400, damping: 20 }}
       >
         {["default", "artsy", "brutalist"].map((view, i) => (
           <motion.button
@@ -596,9 +846,14 @@ export default function HomeBrutalist() {
             className={`brutalist-view-btn ${view === "brutalist" ? "active" : ""}`}
             onClick={() => { setView(view as "default" | "artsy" | "brutalist"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
             data-testid={`brutalist-btn-view-${view === "default" ? "basic" : view === "artsy" ? "immersive" : "brutalist"}`}
-            initial={{ y: -20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.3, delay: 0.1 + i * 0.08 }}
+            initial={{ y: -30, opacity: 0, rotate: -3 }}
+            animate={{ y: 0, opacity: 1, rotate: 0 }}
+            transition={{
+              type: "spring",
+              stiffness: 500,
+              damping: 18,
+              delay: 0.15 + i * 0.1,
+            }}
           >
             {view === "default" ? "Basic" : view === "artsy" ? "Immersive" : "Brutalist"}
           </motion.button>
@@ -606,29 +861,65 @@ export default function HomeBrutalist() {
       </motion.header>
 
       <main className="brutalist-main">
-        <motion.nav
-          className="brutalist-nav-center"
-          initial={{ y: 20, opacity: 0 }}
+        {/* === 6. Sliding Tab Indicator Nav === */}
+        <motion.div
+          className="brutalist-nav-wrapper"
+          ref={navContainerRef}
+          initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.4, delay: 0.3 }}
+          transition={{ type: "spring", stiffness: 400, damping: 22, delay: 0.3 }}
         >
+          {/* Orange sliding indicator */}
+          <motion.div
+            className="brutalist-nav-indicator"
+            animate={{
+              left: indicatorStyle.left,
+              width: indicatorStyle.width,
+            }}
+            transition={{ type: "spring", stiffness: 400, damping: 28 }}
+          />
           {sections.map((section, i) => (
             <motion.button
               key={section.id}
+              ref={(el) => { navBtnRefs.current[section.id] = el; }}
               className={`brutalist-nav-btn ${activeSection === section.id || pendingSection === section.id ? "active" : ""}`}
               onClick={() => handleTabClick(section.id)}
               data-testid={`brutalist-nav-${section.id}`}
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.3, delay: 0.35 + i * 0.06 }}
+              initial={{ scale: 0.7, opacity: 0, rotate: -5 }}
+              animate={{ scale: 1, opacity: 1, rotate: 0 }}
+              transition={{
+                type: "spring",
+                stiffness: 500,
+                damping: 16,
+                delay: 0.35 + i * 0.08,
+              }}
             >
               {section.label}
             </motion.button>
           ))}
-        </motion.nav>
+        </motion.div>
+
+        {/* === 8. Marquee Ticker Bar === */}
+        <motion.div
+          className="brutalist-marquee"
+          initial={{ opacity: 0, scaleX: 0 }}
+          animate={{ opacity: 1, scaleX: 1 }}
+          transition={{ type: "spring", stiffness: 300, damping: 25, delay: 0.6 }}
+          style={{ transformOrigin: "center" }}
+        >
+          <div className="brutalist-marquee-inner">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <span key={i} className="brutalist-marquee-text">
+                ZAID AL-QADI // DEVELOPER // ENGINEER // BUILDER //
+              </span>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* === Content Container — crashes in from below === */}
         <motion.div
           className="brutalist-body-container"
-          initial={{ y: 30, opacity: 0 }}
+          initial={{ y: 80, opacity: 0 }}
           animate={{
             y: 0,
             opacity: 1,
@@ -636,8 +927,8 @@ export default function HomeBrutalist() {
             width: containerWidth !== undefined ? containerWidth + 54 : "auto",
           }}
           transition={{
-            y: { duration: 0.5, delay: 0.5 },
-            opacity: { duration: 0.5, delay: 0.5 },
+            y: { type: "spring", stiffness: 300, damping: 20, delay: 0.5 },
+            opacity: { duration: 0.3, delay: 0.5 },
             height: { duration: 0.4, ease: "easeInOut" },
             width: { duration: 0.4, ease: "easeInOut" },
           }}
