@@ -419,6 +419,78 @@ function ContactSection() {
   );
 }
 
+const phoneScreenText: Record<SectionId, string> = {
+  about: "> CS + Business @ NEU\n> Full-stack dev\n> Ships fast, learns always",
+  projects: "> Real-world apps\n> React + Node + Postgres\n> Open source on GitHub",
+  skills: "> 20+ technologies\n> Frontend to deployment\n> AI-augmented workflow",
+  contact: "> Ready to collaborate\n> Send a message below\n> Let's build together",
+};
+
+const keyboardRows = [
+  ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
+  ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
+  ["Z", "X", "C", "V", "B", "N", "M"],
+];
+
+function BrutalistPhone({ activeSection }: { activeSection: SectionId }) {
+  const [displayedText, setDisplayedText] = useState("");
+
+  useEffect(() => {
+    const fullText = phoneScreenText[activeSection];
+    setDisplayedText("");
+    let i = 0;
+    const interval = setInterval(() => {
+      i++;
+      setDisplayedText(fullText.slice(0, i));
+      if (i >= fullText.length) clearInterval(interval);
+    }, 35);
+    return () => clearInterval(interval);
+  }, [activeSection]);
+
+  return (
+    <motion.div
+      className="brutalist-phone"
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ type: "spring", stiffness: 300, damping: 25, delay: 0.6 }}
+    >
+      {/* Camera */}
+      <div className="brutalist-phone-top">
+        <div className="brutalist-phone-camera" />
+      </div>
+
+      {/* Screen */}
+      <div className="brutalist-phone-screen">
+        <span className="brutalist-phone-screen-text">
+          {displayedText.split("\n").map((line, i) => (
+            <span key={i}>
+              {line}
+              {i < displayedText.split("\n").length - 1 && <br />}
+            </span>
+          ))}
+        </span>
+        <span className="brutalist-phone-cursor" />
+      </div>
+
+      {/* Trackball */}
+      <div className="brutalist-phone-trackball-row">
+        <div className="brutalist-phone-trackball" />
+      </div>
+
+      {/* Keyboard */}
+      <div className="brutalist-phone-keyboard">
+        {keyboardRows.map((row, ri) => (
+          <div key={ri} className="brutalist-phone-key-row">
+            {row.map((key) => (
+              <div key={key} className="brutalist-phone-key">{key}</div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </motion.div>
+  );
+}
+
 export default function HomeBrutalist() {
   const [activeSection, setActiveSection] = useState<SectionId>("about");
   const [pendingSection, setPendingSection] = useState<SectionId | null>(null);
@@ -563,36 +635,128 @@ export default function HomeBrutalist() {
           animation: glitch 0.4s ease-out forwards;
         }
 
-        /* ==================== */
-        /* 3. MARQUEE TICKER    */
-        /* ==================== */
-        @keyframes marquee-scroll {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        .brutalist-marquee {
-          overflow: hidden;
-          background: #000;
-          border-top: 3px solid #000;
-          border-bottom: 3px solid #000;
-          padding: 6px 0;
-          margin-bottom: 16px;
+        /* ======================== */
+        /* 3. BLACKBERRY PHONE     */
+        /* ======================== */
+        .brutalist-content-row {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 24px;
           width: 100%;
         }
-        .brutalist-marquee-inner {
+        .brutalist-content-col {
           display: flex;
-          white-space: nowrap;
-          animation: marquee-scroll 12s linear infinite;
-          width: max-content;
+          flex-direction: column;
+          align-items: center;
         }
-        .brutalist-marquee-text {
+        @media (max-width: 900px) {
+          .brutalist-content-row {
+            flex-direction: column;
+            align-items: center;
+          }
+          .brutalist-content-col {
+            width: 100%;
+          }
+          .brutalist-phone {
+            order: -1;
+          }
+        }
+        .brutalist-phone {
+          width: 220px;
+          min-width: 220px;
+          background: #2a2a2a;
+          border: 3px solid #000;
+          border-radius: 16px;
+          padding: 12px 14px;
+          box-shadow: 6px 6px 0px #000;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 8px;
+        }
+        .brutalist-phone-top {
+          display: flex;
+          align-items: center;
+          width: 100%;
+          justify-content: center;
+        }
+        .brutalist-phone-camera {
+          width: 10px;
+          height: 10px;
+          background: #111;
+          border: 2px solid #555;
+          border-radius: 50%;
+          box-shadow: inset 0 0 2px rgba(100,150,255,0.4);
+        }
+        .brutalist-phone-screen {
+          width: 100%;
+          min-height: 64px;
+          background: #000;
+          border: 2px solid #444;
+          border-radius: 4px;
+          padding: 8px 10px;
           font-family: 'Courier New', monospace;
-          font-weight: 900;
-          font-size: 14px;
-          color: rgb(255, 106, 0);
-          text-transform: uppercase;
-          letter-spacing: 2px;
-          padding: 0 24px;
+          font-size: 11px;
+          line-height: 1.5;
+          color: #00ff41;
+          position: relative;
+          overflow: hidden;
+        }
+        .brutalist-phone-screen-text {
+          white-space: pre-wrap;
+        }
+        .brutalist-phone-cursor {
+          display: inline-block;
+          width: 7px;
+          height: 13px;
+          background: #00ff41;
+          animation: phone-blink 0.8s step-end infinite;
+          vertical-align: text-bottom;
+          margin-left: 1px;
+        }
+        @keyframes phone-blink {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0; }
+        }
+        .brutalist-phone-trackball-row {
+          display: flex;
+          justify-content: center;
+          padding: 2px 0;
+        }
+        .brutalist-phone-trackball {
+          width: 14px;
+          height: 14px;
+          background: rgb(255, 106, 0);
+          border: 2px solid #000;
+          border-radius: 50%;
+          box-shadow: inset 0 -2px 3px rgba(0,0,0,0.4);
+        }
+        .brutalist-phone-keyboard {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          gap: 3px;
+        }
+        .brutalist-phone-key-row {
+          display: flex;
+          justify-content: center;
+          gap: 3px;
+        }
+        .brutalist-phone-key {
+          width: 16px;
+          max-width: 16px;
+          height: 18px;
+          background: #1a1a1a;
+          border: 1px solid #444;
+          border-radius: 2px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-family: 'Courier New', monospace;
+          font-size: 8px;
+          font-weight: 700;
+          color: #aaa;
         }
 
         /* ==================== */
@@ -861,6 +1025,10 @@ export default function HomeBrutalist() {
       </motion.header>
 
       <main className="brutalist-main">
+        {/* === Content + Phone side-by-side === */}
+        <div className="brutalist-content-row">
+
+        <div className="brutalist-content-col">
         {/* === 6. Sliding Tab Indicator Nav === */}
         <motion.div
           className="brutalist-nav-wrapper"
@@ -897,23 +1065,6 @@ export default function HomeBrutalist() {
               {section.label}
             </motion.button>
           ))}
-        </motion.div>
-
-        {/* === 8. Marquee Ticker Bar === */}
-        <motion.div
-          className="brutalist-marquee"
-          initial={{ opacity: 0, scaleX: 0 }}
-          animate={{ opacity: 1, scaleX: 1 }}
-          transition={{ type: "spring", stiffness: 300, damping: 25, delay: 0.6 }}
-          style={{ transformOrigin: "center" }}
-        >
-          <div className="brutalist-marquee-inner">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <span key={i} className="brutalist-marquee-text">
-                ZAID AL-QADI // DEVELOPER // ENGINEER // BUILDER //
-              </span>
-            ))}
-          </div>
         </motion.div>
 
         {/* === Content Container — crashes in from below === */}
@@ -961,6 +1112,12 @@ export default function HomeBrutalist() {
             </motion.div>
           </div>
         </motion.div>
+        </div>{/* end brutalist-content-col */}
+
+        {/* === BlackBerry Phone beside content === */}
+        <BrutalistPhone activeSection={pendingSection ?? activeSection} />
+
+        </div>{/* end brutalist-content-row */}
       </main>
     </div>
   );
