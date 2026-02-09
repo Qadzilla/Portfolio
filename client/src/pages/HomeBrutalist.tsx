@@ -423,7 +423,7 @@ const phoneScreenText: Record<SectionId, string> = {
   about: "> CS + Business @ NEU\n> Full-stack dev\n> Ships fast, learns always",
   projects: "> Real-world apps\n> React + Node + Postgres\n> Open source on GitHub",
   skills: "> 20+ technologies\n> Frontend to deployment\n> AI-augmented workflow",
-  contact: "> Ready to collaborate\n> Send a message below\n> Let's build together",
+  contact: "> Ready to collaborate\n> Send a message\n> Let's build together",
 };
 
 const keyboardRows = [
@@ -658,8 +658,31 @@ export default function HomeBrutalist() {
           .brutalist-content-col {
             width: 100%;
           }
+
+          /* Strip phone body — show only the screen */
           .brutalist-phone {
-            order: -1;
+            width: 100%;
+            min-width: unset;
+            max-width: 400px;
+            background: none;
+            border: none;
+            border-radius: 0;
+            padding: 0;
+            box-shadow: none;
+            margin-bottom: 12px;
+          }
+
+          /* Hide non-screen parts */
+          .brutalist-phone-top,
+          .brutalist-phone-trackball-row,
+          .brutalist-phone-keyboard {
+            display: none;
+          }
+
+          /* Screen standalone styling */
+          .brutalist-phone-screen {
+            border-radius: 6px;
+            border: 2px solid #444;
           }
         }
         .brutalist-phone {
@@ -757,6 +780,18 @@ export default function HomeBrutalist() {
           font-size: 8px;
           font-weight: 700;
           color: #aaa;
+        }
+
+        @media (min-width: 901px) {
+          .brutalist-content-col {
+            position: relative;
+          }
+          .brutalist-content-col > .brutalist-phone {
+            position: absolute;
+            left: calc(100% + 24px);
+            top: 50%;
+            transform: translateY(-50%);
+          }
         }
 
         /* ==================== */
@@ -1067,6 +1102,9 @@ export default function HomeBrutalist() {
           ))}
         </motion.div>
 
+        {/* === BlackBerry Phone (between nav and content) === */}
+        <BrutalistPhone activeSection={pendingSection ?? activeSection} />
+
         {/* === Content Container — crashes in from below === */}
         <motion.div
           className="brutalist-body-container"
@@ -1113,9 +1151,6 @@ export default function HomeBrutalist() {
           </div>
         </motion.div>
         </div>{/* end brutalist-content-col */}
-
-        {/* === BlackBerry Phone beside content === */}
-        <BrutalistPhone activeSection={pendingSection ?? activeSection} />
 
         </div>{/* end brutalist-content-row */}
       </main>
