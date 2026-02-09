@@ -212,6 +212,12 @@ export default function HomeArtsy() {
   const skillsSectionRef = useRef<HTMLDivElement>(null);
   const contactSectionRef = useRef<HTMLDivElement>(null);
 
+  // Background depth layer refs
+  const dotGridRef = useRef<HTMLDivElement>(null);
+  const orb1Ref = useRef<HTMLDivElement>(null);
+  const orb2Ref = useRef<HTMLDivElement>(null);
+  const orb3Ref = useRef<HTMLDivElement>(null);
+
   const { toast } = useToast();
   const form = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
@@ -283,6 +289,15 @@ export default function HomeArtsy() {
         .to(skillsSectionRef.current, { z: 1800, duration: 1.2 }, 4.5)
         .to(contactSectionRef.current, { z: 0, opacity: 1, duration: 1.2 }, 4.7);
 
+      // Dot grid scale with scroll — linear so it peaks at contact section
+      tl.to(dotGridRef.current, { scale: 3, duration: 5.9, ease: "none" }, 0);
+
+      // Ambient glow orb drift animations
+      tl.to(orb1Ref.current, { x: 120, y: -160, duration: 5.9 }, 0);
+      tl.to(orb2Ref.current, { x: -100, y: 200, duration: 5.9 }, 0);
+      tl.to(orb3Ref.current, { x: 80, y: -120, duration: 5.9 }, 0);
+
+
     }, containerRef);
 
     return () => ctx.revert();
@@ -299,6 +314,51 @@ export default function HomeArtsy() {
         body::-webkit-scrollbar {
           display: none;
         }
+        .room-vignette {
+          position: absolute;
+          inset: 0;
+          background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.04) 100%);
+        }
+        .glow-orb {
+          position: absolute;
+          border-radius: 9999px;
+          filter: blur(80px);
+          will-change: transform;
+        }
+        .glow-orb-1 {
+          width: 50vw;
+          height: 50vw;
+          top: -10%;
+          left: -10%;
+          background: radial-gradient(circle, rgba(200,210,230,0.4) 0%, transparent 70%);
+          opacity: 0.4;
+        }
+        .glow-orb-2 {
+          width: 45vw;
+          height: 45vw;
+          top: 50%;
+          right: -15%;
+          background: radial-gradient(circle, rgba(220,200,240,0.3) 0%, transparent 70%);
+          opacity: 0.35;
+        }
+        .glow-orb-3 {
+          width: 40vw;
+          height: 40vw;
+          bottom: -5%;
+          left: 30%;
+          background: radial-gradient(circle, rgba(180,220,220,0.3) 0%, transparent 70%);
+          opacity: 0.3;
+        }
+        .dot-grid {
+          position: absolute;
+          inset: -100%;
+          width: 300%;
+          height: 300%;
+          background-image: radial-gradient(circle, rgba(0,0,0,0.08) 1px, transparent 1px);
+          background-size: 18px 18px;
+          will-change: transform;
+          transform-origin: center center;
+        }
       `}</style>
       <MinimalHeader />
 
@@ -309,6 +369,16 @@ export default function HomeArtsy() {
           className="h-screen sticky top-0 overflow-hidden"
           style={{ perspective: "1000px", perspectiveOrigin: "50% 50%" }}
         >
+          {/* Background layers */}
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="dot-grid" ref={dotGridRef} />
+            <div className="room-vignette" />
+            {/* Ambient glow orbs */}
+            <div className="glow-orb glow-orb-1" ref={orb1Ref} />
+            <div className="glow-orb glow-orb-2" ref={orb2Ref} />
+            <div className="glow-orb glow-orb-3" ref={orb3Ref} />
+          </div>
+
           {/* Hero Section */}
           <div
             ref={heroContentRef}
@@ -513,7 +583,7 @@ export default function HomeArtsy() {
                       key={tech.name}
                       className="group flex flex-col items-center gap-3"
                     >
-                      <div className="relative w-16 h-16 md:w-20 md:h-20 rounded-xl bg-black/5 border border-black/10 flex items-center justify-center">
+                      <div className="relative w-16 h-16 md:w-20 md:h-20 rounded-xl bg-white border border-black/10 flex items-center justify-center">
                         <Icon
                           className="w-8 h-8 md:w-10 md:h-10"
                           style={{ color: tech.color }}
