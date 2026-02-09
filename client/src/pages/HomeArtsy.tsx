@@ -387,7 +387,7 @@ export default function HomeArtsy() {
           >
             <div className="max-w-4xl mx-auto px-6 text-center">
               <motion.h1
-                className="text-3xl sm:text-5xl md:text-7xl font-bold mb-6 md:mb-10 tracking-tight"
+                className="text-5xl md:text-7xl font-bold mb-10 tracking-tight"
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.1 }}
@@ -397,7 +397,7 @@ export default function HomeArtsy() {
                   <ScatterText text="Zaid" gradient />
                   <ScatterText text="." />
                 </span>
-                <span className="scatter-letter block text-base md:text-2xl text-black/60 font-normal mt-4" style={{ wordSpacing: '0.25em' }}>
+                <span className="scatter-letter block text-xl md:text-2xl text-black/60 font-normal mt-4" style={{ wordSpacing: '0.25em' }}>
                   <Typewriter
                     options={{
                       strings: [
@@ -422,18 +422,18 @@ export default function HomeArtsy() {
             className="absolute inset-0 flex items-center justify-center"
             style={{ transformStyle: "preserve-3d" }}
           >
-            <div className="max-w-6xl mx-auto px-4 py-12 md:px-6 md:py-24">
-              <div className="text-center mb-8 md:mb-16">
+            <div className="max-w-6xl mx-auto px-6 py-24">
+              <div className="text-center mb-16">
                 <span className="text-orange-500 font-medium text-sm tracking-wider uppercase mb-4 block">
                   About Me
                 </span>
-                <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-6 text-black">
+                <h2 className="text-4xl md:text-5xl font-bold mb-6 text-black">
                   Building at the Intersection
                 </h2>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-4 md:gap-8 mb-8 md:mb-16">
-                <Card className="p-4 md:p-8 h-full bg-white border-black/20">
+              <div className="grid md:grid-cols-2 gap-8 mb-16">
+                <Card className="p-8 h-full bg-white border-black/20">
                   <h3 className="text-2xl font-semibold mb-4 text-black">My Journey</h3>
                   <div className="space-y-4 text-black/70 leading-relaxed">
                     <p>
@@ -448,11 +448,11 @@ export default function HomeArtsy() {
                   </div>
                 </Card>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div className="grid grid-cols-2 gap-4">
                   {highlights.map((item) => (
                     <Card
                       key={item.title}
-                      className="p-4 md:p-6 bg-white border-black/20"
+                      className="p-6 bg-white border-black/20"
                     >
                       <div className="w-12 h-12 rounded-md bg-orange-500/10 flex items-center justify-center mb-4">
                         <item.icon className="w-6 h-6 text-orange-500" />
@@ -472,17 +472,17 @@ export default function HomeArtsy() {
             className="absolute inset-0 flex items-center justify-center"
             style={{ transformStyle: "preserve-3d" }}
           >
-            <div className="max-w-7xl mx-auto px-4 py-12 md:px-8 md:py-24">
-              <div className="text-center mb-8 md:mb-16">
+            <div className="max-w-7xl mx-auto px-8 py-24">
+              <div className="text-center mb-16">
                 <span className="text-orange-500 font-medium text-sm tracking-wider uppercase mb-4 block">
                   Portfolio
                 </span>
-                <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-6 text-black">
+                <h2 className="text-4xl md:text-5xl font-bold mb-6 text-black">
                   Featured Projects
                 </h2>
               </div>
 
-              <div className="flex flex-wrap justify-center gap-4 md:gap-8">
+              <div className="flex flex-wrap justify-center gap-8">
                 {isLoading ? (
                   <div className="w-full max-w-md">
                     <Card className="overflow-hidden bg-white border-black/20">
@@ -562,12 +562,12 @@ export default function HomeArtsy() {
             className="absolute inset-0 flex items-center justify-center"
             style={{ transformStyle: "preserve-3d" }}
           >
-            <div className="max-w-6xl mx-auto px-4 py-12 md:px-8 md:py-24">
-              <div className="text-center mb-8 md:mb-16">
+            <div className="max-w-6xl mx-auto px-8 py-24">
+              <div className="text-center mb-16">
                 <span className="text-orange-500 font-medium text-sm tracking-wider uppercase mb-4 block">
                   Expertise
                 </span>
-                <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-6 text-black">
+                <h2 className="text-4xl md:text-5xl font-bold mb-6 text-black">
                   Skills & Technologies
                 </h2>
                 <p className="text-black/60 text-lg max-w-2xl mx-auto">
@@ -575,7 +575,7 @@ export default function HomeArtsy() {
                 </p>
               </div>
 
-              <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-4 md:gap-8">
+              <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-6 md:gap-8">
                 {[...technologies, ...skills].map((tech) => {
                   const Icon = tech.icon;
                   return (
@@ -583,7 +583,7 @@ export default function HomeArtsy() {
                       key={tech.name}
                       className="group flex flex-col items-center gap-3"
                     >
-                      <div className="relative w-14 h-14 md:w-20 md:h-20 rounded-xl bg-white border border-black/10 flex items-center justify-center">
+                      <div className="relative w-16 h-16 md:w-20 md:h-20 rounded-xl bg-white border border-black/10 flex items-center justify-center">
                         <Icon
                           className="w-8 h-8 md:w-10 md:h-10"
                           style={{ color: tech.color }}
@@ -605,12 +605,12 @@ export default function HomeArtsy() {
             className="absolute inset-0 flex items-center justify-center"
             style={{ transformStyle: "preserve-3d" }}
           >
-            <div className="max-w-2xl mx-auto px-4 py-12 md:px-8 md:py-24">
-              <div className="text-center mb-6 md:mb-12">
+            <div className="max-w-2xl mx-auto px-8 py-24">
+              <div className="text-center mb-12">
                 <span className="text-orange-500 font-medium text-sm tracking-wider uppercase mb-4 block">
                   Get in Touch
                 </span>
-                <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-6 text-black">
+                <h2 className="text-4xl md:text-5xl font-bold mb-6 text-black">
                   Let's Connect
                 </h2>
                 <p className="text-black/60 text-lg">
@@ -618,7 +618,7 @@ export default function HomeArtsy() {
                 </p>
               </div>
 
-              <Card className="p-4 md:p-8 bg-white border-black/20">
+              <Card className="p-8 bg-white border-black/20">
                 <Form {...form}>
                   <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                     <div className="grid md:grid-cols-2 gap-6">
