@@ -1,4 +1,7 @@
 import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Typewriter from "typewriter-effect";
 import { useView } from "@/components/ViewProvider";
 import { Code, Briefcase, GraduationCap, Globe, ExternalLink, Folder, Send, Loader2 } from "lucide-react";
@@ -112,10 +115,7 @@ const highlights = [
   },
 ];
 
-const sectionVariants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
-};
+gsap.registerPlugin(ScrollTrigger);
 
 function MinimalHeader() {
   const { setView } = useView();
@@ -166,6 +166,18 @@ function MinimalHeader() {
 }
 
 export default function HomeArtsyMobile() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const heroContentRef = useRef<HTMLDivElement>(null);
+  const aboutSectionRef = useRef<HTMLDivElement>(null);
+  const projectsSectionRef = useRef<HTMLDivElement>(null);
+  const skillsSectionRef = useRef<HTMLDivElement>(null);
+  const contactSectionRef = useRef<HTMLDivElement>(null);
+
+  const dotGridRef = useRef<HTMLDivElement>(null);
+  const orb1Ref = useRef<HTMLDivElement>(null);
+  const orb2Ref = useRef<HTMLDivElement>(null);
+  const orb3Ref = useRef<HTMLDivElement>(null);
+
   const { toast } = useToast();
   const form = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
@@ -206,382 +218,432 @@ export default function HomeArtsyMobile() {
     queryKey: ["/api/projects"],
   });
 
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.set(aboutSectionRef.current, { z: -5000, opacity: 0 });
+      gsap.set(projectsSectionRef.current, { z: -5000, opacity: 0 });
+      gsap.set(skillsSectionRef.current, { z: -5000, opacity: 0 });
+      gsap.set(contactSectionRef.current, { z: -5000, opacity: 0 });
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "85% top",
+          scrub: 1.2,
+        }
+      });
+
+      tl.to(heroContentRef.current, { z: 1800, duration: 1.2 }, 0)
+        .to(aboutSectionRef.current, { z: 0, opacity: 1, duration: 1.2 }, 0.2)
+        .to(aboutSectionRef.current, { z: 1800, duration: 1.2 }, 1.5)
+        .to(projectsSectionRef.current, { z: 0, opacity: 1, duration: 1.2 }, 1.7)
+        .to(projectsSectionRef.current, { z: 1800, duration: 1.2 }, 3)
+        .to(skillsSectionRef.current, { z: 0, opacity: 1, duration: 1.2 }, 3.2)
+        .to(skillsSectionRef.current, { z: 1800, duration: 1.2 }, 4.5)
+        .to(contactSectionRef.current, { z: 0, opacity: 1, duration: 1.2 }, 4.7);
+
+      tl.to(dotGridRef.current, { scale: 3, duration: 5.9, ease: "none" }, 0);
+
+      tl.to(orb1Ref.current, { x: 120, y: -160, duration: 5.9 }, 0);
+      tl.to(orb2Ref.current, { x: -100, y: 200, duration: 5.9 }, 0);
+      tl.to(orb3Ref.current, { x: 80, y: -120, duration: 5.9 }, 0);
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <div className="bg-white text-black min-h-screen">
-      <MinimalHeader />
+    <div ref={containerRef} className="bg-white text-black">
       <style>{`
-        .artsy-mobile-dot-grid {
+        html, body {
+          scrollbar-width: none;
+          -ms-overflow-style: none;
+        }
+        html::-webkit-scrollbar,
+        body::-webkit-scrollbar {
+          display: none;
+        }
+        .room-vignette {
           position: absolute;
           inset: 0;
-          background-image: radial-gradient(circle, rgba(0,0,0,0.08) 1px, transparent 1px);
-          background-size: 18px 18px;
+          background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.04) 100%);
         }
         .glow-orb {
           position: absolute;
           border-radius: 9999px;
           filter: blur(80px);
+          will-change: transform;
         }
         .glow-orb-1 {
-          width: 60vw;
-          height: 60vw;
-          top: -5%;
-          left: -15%;
+          width: 50vw;
+          height: 50vw;
+          top: -10%;
+          left: -10%;
           background: radial-gradient(circle, rgba(200,210,230,0.4) 0%, transparent 70%);
           opacity: 0.4;
         }
         .glow-orb-2 {
-          width: 50vw;
-          height: 50vw;
-          top: 40%;
-          right: -20%;
+          width: 45vw;
+          height: 45vw;
+          top: 50%;
+          right: -15%;
           background: radial-gradient(circle, rgba(220,200,240,0.3) 0%, transparent 70%);
           opacity: 0.35;
         }
         .glow-orb-3 {
-          width: 45vw;
-          height: 45vw;
-          bottom: 10%;
-          left: 20%;
+          width: 40vw;
+          height: 40vw;
+          bottom: -5%;
+          left: 30%;
           background: radial-gradient(circle, rgba(180,220,220,0.3) 0%, transparent 70%);
           opacity: 0.3;
         }
+        .dot-grid {
+          position: absolute;
+          inset: -100%;
+          width: 300%;
+          height: 300%;
+          background-image: radial-gradient(circle, rgba(0,0,0,0.08) 1px, transparent 1px);
+          background-size: 18px 18px;
+          will-change: transform;
+          transform-origin: center center;
+        }
       `}</style>
+      <MinimalHeader />
 
-      {/* Static background */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="artsy-mobile-dot-grid" />
-        <div className="glow-orb glow-orb-1" />
-        <div className="glow-orb glow-orb-2" />
-        <div className="glow-orb glow-orb-3" />
-      </div>
+      {/* Scroll container */}
+      <div className="h-[1200vh]">
+        {/* 3D Viewport */}
+        <div
+          className="h-screen sticky top-0 overflow-hidden"
+          style={{ perspective: "1000px", perspectiveOrigin: "50% 50%" }}
+        >
+          {/* Background layers */}
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="dot-grid" ref={dotGridRef} />
+            <div className="room-vignette" />
+            <div className="glow-orb glow-orb-1" ref={orb1Ref} />
+            <div className="glow-orb glow-orb-2" ref={orb2Ref} />
+            <div className="glow-orb glow-orb-3" ref={orb3Ref} />
+          </div>
 
-      <main className="relative z-10 pt-16">
-        {/* Hero Section */}
-        <section className="min-h-[70vh] flex items-center justify-center px-4">
-          <motion.div
-            className="text-center"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+          {/* Hero Section */}
+          <div
+            ref={heroContentRef}
+            className="absolute inset-0 flex items-center justify-center"
+            style={{ transformStyle: "preserve-3d" }}
           >
-            <h1 className="text-4xl font-bold mb-6 tracking-tight">
-              <span className="block">
-                Hello, I'm{" "}
-                <span className="bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">
-                  Zaid
-                </span>
-                .
-              </span>
-              <span className="block text-lg text-black/60 font-normal mt-3">
-                <Typewriter
-                  options={{
-                    strings: [
-                      "Full-Stack Developer",
-                      "Open for Freelance",
-                      "Building Cool Stuff",
-                    ],
-                    autoStart: true,
-                    loop: true,
-                    deleteSpeed: 30,
-                    delay: 50,
-                  }}
-                />
-              </span>
-            </h1>
-          </motion.div>
-        </section>
-
-        {/* About Section */}
-        <motion.section
-          className="px-4 py-12"
-          variants={sectionVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-        >
-          <div className="text-center mb-8">
-            <span className="text-orange-500 font-medium text-sm tracking-wider uppercase mb-3 block">
-              About Me
-            </span>
-            <h2 className="text-3xl font-bold mb-4 text-black">
-              Building at the Intersection
-            </h2>
-          </div>
-
-          <Card className="p-5 mb-4 bg-white border-black/20">
-            <h3 className="text-xl font-semibold mb-3 text-black">My Journey</h3>
-            <div className="space-y-3 text-black/70 leading-relaxed text-sm">
-              <p>
-                I believe in shipping fast, learning constantly, and building things that matter.
-              </p>
-              <p>
-                I'm a Computer Science & Business Administration graduate from Northeastern University, bringing technical expertise and business understanding to every project I build.
-              </p>
-              <p>
-                I enjoy working closely with clients to understand their goals, translate ideas into solutions, and deliver work that's both technically sound and easy to maintain.
-              </p>
-            </div>
-          </Card>
-
-          <div className="grid grid-cols-1 gap-3">
-            {highlights.map((item) => (
-              <Card
-                key={item.title}
-                className="p-4 bg-white border-black/20"
+            <div className="max-w-sm mx-auto px-4 text-center">
+              <motion.h1
+                className="text-4xl font-bold mb-6 tracking-tight"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
               >
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-md bg-orange-500/10 flex items-center justify-center shrink-0">
-                    <item.icon className="w-5 h-5 text-orange-500" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-sm mb-1 text-black">{item.title}</h4>
-                    <p className="text-xs text-black/60">{item.description}</p>
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </motion.section>
-
-        {/* Projects Section */}
-        <motion.section
-          className="px-4 py-12"
-          variants={sectionVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-        >
-          <div className="text-center mb-8">
-            <span className="text-orange-500 font-medium text-sm tracking-wider uppercase mb-3 block">
-              Portfolio
-            </span>
-            <h2 className="text-3xl font-bold mb-4 text-black">
-              Featured Projects
-            </h2>
-          </div>
-
-          <div className="flex flex-col gap-6">
-            {isLoading ? (
-              <Card className="overflow-hidden bg-white border-black/20">
-                <Skeleton className="aspect-video" />
-                <div className="p-5">
-                  <Skeleton className="h-5 w-20 mb-3" />
-                  <Skeleton className="h-6 w-3/4 mb-2" />
-                  <Skeleton className="h-4 w-full mb-4" />
-                  <div className="flex gap-2">
-                    <Skeleton className="h-6 w-16" />
-                    <Skeleton className="h-6 w-16" />
-                  </div>
-                </div>
-              </Card>
-            ) : projects && projects.length > 0 ? (
-              projects.map((project) => (
-                <Card key={project.id} className="group overflow-hidden bg-white border-black/20">
-                  <div className="relative aspect-video overflow-hidden rounded-t-md">
-                    <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-orange-600/20" />
-                    <img
-                      src={project.imageUrl}
-                      alt={project.title}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="p-5">
-                    <h3 className="text-lg font-semibold mb-2 text-black">{project.title}</h3>
-                    <p className="text-black/70 text-sm mb-3">{project.description}</p>
-                    <div className="flex flex-wrap gap-2 mb-3">
-                      {project.technologies.map((tech) => (
-                        <span
-                          key={tech}
-                          className="text-xs px-2 py-1 rounded-md bg-black/5 text-black"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                    <div className="flex gap-2">
-                      {project.liveUrl && (
-                        <Button size="sm" className="bg-orange-500 hover:bg-orange-600" asChild>
-                          <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
-                            <ExternalLink className="w-4 h-4 mr-2" />
-                            Live Demo
-                          </a>
-                        </Button>
-                      )}
-                      {project.githubUrl && (
-                        <Button size="sm" variant="secondary" asChild>
-                          <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
-                            <Github className="w-4 h-4 mr-2" />
-                            Code
-                          </a>
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                </Card>
-              ))
-            ) : (
-              <div className="text-center py-12">
-                <Folder className="w-12 h-12 mx-auto text-black/30 mb-4" />
-                <p className="text-black/60">No projects yet. Check back soon!</p>
-              </div>
-            )}
-          </div>
-        </motion.section>
-
-        {/* Skills Section */}
-        <motion.section
-          className="px-4 py-12"
-          variants={sectionVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-        >
-          <div className="text-center mb-8">
-            <span className="text-orange-500 font-medium text-sm tracking-wider uppercase mb-3 block">
-              Expertise
-            </span>
-            <h2 className="text-3xl font-bold mb-4 text-black">
-              Skills & Technologies
-            </h2>
-            <p className="text-black/60 text-sm">
-              The technologies and tools I use to bring ideas to life.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-3 gap-4">
-            {[...technologies, ...skills].map((tech) => {
-              const Icon = tech.icon;
-              return (
-                <div
-                  key={tech.name}
-                  className="flex flex-col items-center gap-2"
-                >
-                  <div className="w-12 h-12 rounded-xl bg-white border border-black/10 flex items-center justify-center">
-                    <Icon
-                      className="w-6 h-6"
-                      style={{ color: tech.color }}
-                    />
-                  </div>
-                  <span className="text-[10px] text-black/60 text-center font-medium">
-                    {tech.name}
+                <span className="block">
+                  Hello, I'm{" "}
+                  <span className="bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">
+                    Zaid
                   </span>
+                  .
+                </span>
+                <span className="block text-lg text-black/60 font-normal mt-3">
+                  <Typewriter
+                    options={{
+                      strings: [
+                        "Full-Stack Developer",
+                        "Open for Freelance",
+                        "Building Cool Stuff",
+                      ],
+                      autoStart: true,
+                      loop: true,
+                      deleteSpeed: 30,
+                      delay: 50,
+                    }}
+                  />
+                </span>
+              </motion.h1>
+            </div>
+          </div>
+
+          {/* About Section */}
+          <div
+            ref={aboutSectionRef}
+            className="absolute inset-0 flex items-center justify-center overflow-y-auto"
+            style={{ transformStyle: "preserve-3d" }}
+          >
+            <div className="max-w-sm mx-auto px-4 py-16">
+              <div className="text-center mb-8">
+                <span className="text-orange-500 font-medium text-sm tracking-wider uppercase mb-3 block">
+                  About Me
+                </span>
+                <h2 className="text-3xl font-bold mb-4 text-black">
+                  Building at the Intersection
+                </h2>
+              </div>
+
+              <Card className="p-5 mb-4 bg-white border-black/20">
+                <h3 className="text-xl font-semibold mb-3 text-black">My Journey</h3>
+                <div className="space-y-3 text-black/70 leading-relaxed text-sm">
+                  <p>I believe in shipping fast, learning constantly, and building things that matter.</p>
+                  <p>I'm a Computer Science & Business Administration graduate from Northeastern University, bringing technical expertise and business understanding to every project I build.</p>
+                  <p>I enjoy working closely with clients to understand their goals, translate ideas into solutions, and deliver work that's both technically sound and easy to maintain.</p>
                 </div>
-              );
-            })}
-          </div>
-        </motion.section>
+              </Card>
 
-        {/* Contact Section */}
-        <motion.section
-          className="px-4 py-12 pb-20"
-          variants={sectionVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-        >
-          <div className="text-center mb-8">
-            <span className="text-orange-500 font-medium text-sm tracking-wider uppercase mb-3 block">
-              Get in Touch
-            </span>
-            <h2 className="text-3xl font-bold mb-4 text-black">
-              Let's Connect
-            </h2>
-            <p className="text-black/60 text-sm">
-              Have a question or want to work together? Drop me a message.
-            </p>
+              <div className="grid grid-cols-1 gap-3">
+                {highlights.map((item) => (
+                  <Card key={item.title} className="p-4 bg-white border-black/20">
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-md bg-orange-500/10 flex items-center justify-center shrink-0">
+                        <item.icon className="w-5 h-5 text-orange-500" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-sm mb-1 text-black">{item.title}</h4>
+                        <p className="text-xs text-black/60">{item.description}</p>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
           </div>
 
-          <Card className="p-4 bg-white border-black/20">
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field, fieldState }) => (
-                    <FormItem>
-                      <FormLabel className="text-black">Name <span className="text-orange-500">*</span></FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Your name"
-                          className={`bg-white border-black/20 text-black placeholder:text-black/40 ${fieldState.error ? "border-orange-500 focus-visible:ring-orange-500" : ""}`}
-                          {...field}
+          {/* Projects Section */}
+          <div
+            ref={projectsSectionRef}
+            className="absolute inset-0 flex items-center justify-center overflow-y-auto"
+            style={{ transformStyle: "preserve-3d" }}
+          >
+            <div className="max-w-sm mx-auto px-4 py-16">
+              <div className="text-center mb-8">
+                <span className="text-orange-500 font-medium text-sm tracking-wider uppercase mb-3 block">
+                  Portfolio
+                </span>
+                <h2 className="text-3xl font-bold mb-4 text-black">
+                  Featured Projects
+                </h2>
+              </div>
+
+              <div className="flex flex-col gap-5">
+                {isLoading ? (
+                  <Card className="overflow-hidden bg-white border-black/20">
+                    <Skeleton className="aspect-video" />
+                    <div className="p-5">
+                      <Skeleton className="h-5 w-20 mb-3" />
+                      <Skeleton className="h-6 w-3/4 mb-2" />
+                      <Skeleton className="h-4 w-full mb-4" />
+                      <div className="flex gap-2">
+                        <Skeleton className="h-6 w-16" />
+                        <Skeleton className="h-6 w-16" />
+                      </div>
+                    </div>
+                  </Card>
+                ) : projects && projects.length > 0 ? (
+                  projects.map((project) => (
+                    <Card key={project.id} className="group overflow-hidden bg-white border-black/20">
+                      <div className="relative aspect-video overflow-hidden rounded-t-md">
+                        <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-orange-600/20" />
+                        <img
+                          src={project.imageUrl}
+                          alt={project.title}
+                          className="w-full h-full object-cover"
                         />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field, fieldState }) => (
-                    <FormItem>
-                      <FormLabel className="text-black">Email <span className="text-orange-500">*</span></FormLabel>
-                      <FormControl>
-                        <Input
-                          type="email"
-                          placeholder="your@email.com"
-                          className={`bg-white border-black/20 text-black placeholder:text-black/40 ${fieldState.error ? "border-orange-500 focus-visible:ring-orange-500" : ""}`}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="phone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-black">Phone</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="tel"
-                          placeholder="Your phone number"
-                          className="bg-white border-black/20 text-black placeholder:text-black/40"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="message"
-                  render={({ field, fieldState }) => (
-                    <FormItem>
-                      <FormLabel className="text-black">Message <span className="text-orange-500">*</span></FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Your message..."
-                          className={`min-h-[120px] resize-none bg-white border-black/20 text-black placeholder:text-black/40 ${fieldState.error ? "border-orange-500 focus-visible:ring-orange-500" : ""}`}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button
-                  type="submit"
-                  size="lg"
-                  className="w-full bg-orange-500 hover:bg-orange-600 text-white"
-                  disabled={sendMessage.isPending}
-                >
-                  {sendMessage.isPending ? (
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  ) : (
-                    <Send className="w-4 h-4 mr-2" />
-                  )}
-                  {sendMessage.isPending ? "Sending..." : "Send Message"}
-                </Button>
-              </form>
-            </Form>
-          </Card>
-        </motion.section>
-      </main>
+                      </div>
+                      <div className="p-5">
+                        <h3 className="text-lg font-semibold mb-2 text-black">{project.title}</h3>
+                        <p className="text-black/70 text-sm mb-3">{project.description}</p>
+                        <div className="flex flex-wrap gap-2 mb-3">
+                          {project.technologies.map((tech) => (
+                            <span
+                              key={tech}
+                              className="text-xs px-2 py-1 rounded-md bg-black/5 text-black"
+                            >
+                              {tech}
+                            </span>
+                          ))}
+                        </div>
+                        <div className="flex gap-2">
+                          {project.liveUrl && (
+                            <Button size="sm" className="bg-orange-500 hover:bg-orange-600" asChild>
+                              <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
+                                <ExternalLink className="w-4 h-4 mr-2" />
+                                Live Demo
+                              </a>
+                            </Button>
+                          )}
+                          {project.githubUrl && (
+                            <Button size="sm" variant="secondary" asChild>
+                              <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+                                <Github className="w-4 h-4 mr-2" />
+                                Code
+                              </a>
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    </Card>
+                  ))
+                ) : (
+                  <div className="text-center py-12">
+                    <Folder className="w-12 h-12 mx-auto text-black/30 mb-4" />
+                    <p className="text-black/60">No projects yet. Check back soon!</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Skills Section */}
+          <div
+            ref={skillsSectionRef}
+            className="absolute inset-0 flex items-center justify-center overflow-y-auto"
+            style={{ transformStyle: "preserve-3d" }}
+          >
+            <div className="max-w-sm mx-auto px-4 py-16">
+              <div className="text-center mb-8">
+                <span className="text-orange-500 font-medium text-sm tracking-wider uppercase mb-3 block">
+                  Expertise
+                </span>
+                <h2 className="text-3xl font-bold mb-4 text-black">
+                  Skills & Technologies
+                </h2>
+                <p className="text-black/60 text-sm">
+                  The technologies and tools I use to bring ideas to life.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-3 gap-4">
+                {[...technologies, ...skills].map((tech) => {
+                  const Icon = tech.icon;
+                  return (
+                    <div key={tech.name} className="flex flex-col items-center gap-2">
+                      <div className="w-12 h-12 rounded-xl bg-white border border-black/10 flex items-center justify-center">
+                        <Icon className="w-6 h-6" style={{ color: tech.color }} />
+                      </div>
+                      <span className="text-[10px] text-black/60 text-center font-medium">
+                        {tech.name}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Contact Section */}
+          <div
+            ref={contactSectionRef}
+            className="absolute inset-0 flex items-center justify-center overflow-y-auto"
+            style={{ transformStyle: "preserve-3d" }}
+          >
+            <div className="max-w-sm mx-auto px-4 py-16">
+              <div className="text-center mb-8">
+                <span className="text-orange-500 font-medium text-sm tracking-wider uppercase mb-3 block">
+                  Get in Touch
+                </span>
+                <h2 className="text-3xl font-bold mb-4 text-black">
+                  Let's Connect
+                </h2>
+                <p className="text-black/60 text-sm">
+                  Have a question or want to work together? Drop me a message.
+                </p>
+              </div>
+
+              <Card className="p-4 bg-white border-black/20">
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <FormLabel className="text-black">Name <span className="text-orange-500">*</span></FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Your name"
+                              className={`bg-white border-black/20 text-black placeholder:text-black/40 ${fieldState.error ? "border-orange-500 focus-visible:ring-orange-500" : ""}`}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <FormLabel className="text-black">Email <span className="text-orange-500">*</span></FormLabel>
+                          <FormControl>
+                            <Input
+                              type="email"
+                              placeholder="your@email.com"
+                              className={`bg-white border-black/20 text-black placeholder:text-black/40 ${fieldState.error ? "border-orange-500 focus-visible:ring-orange-500" : ""}`}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="phone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-black">Phone</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="tel"
+                              placeholder="Your phone number"
+                              className="bg-white border-black/20 text-black placeholder:text-black/40"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="message"
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <FormLabel className="text-black">Message <span className="text-orange-500">*</span></FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Your message..."
+                              className={`min-h-[120px] resize-none bg-white border-black/20 text-black placeholder:text-black/40 ${fieldState.error ? "border-orange-500 focus-visible:ring-orange-500" : ""}`}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Button
+                      type="submit"
+                      size="lg"
+                      className="w-full bg-orange-500 hover:bg-orange-600 text-white"
+                      disabled={sendMessage.isPending}
+                    >
+                      {sendMessage.isPending ? (
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      ) : (
+                        <Send className="w-4 h-4 mr-2" />
+                      )}
+                      {sendMessage.isPending ? "Sending..." : "Send Message"}
+                    </Button>
+                  </form>
+                </Form>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
