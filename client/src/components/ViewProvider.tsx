@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
 
 export type ViewType = "default" | "artsy" | "brutalist";
 
@@ -17,19 +17,7 @@ const VIEWS: { id: ViewType; name: string }[] = [
 ];
 
 export function ViewProvider({ children }: { children: ReactNode }) {
-  const [currentView, setCurrentView] = useState<ViewType>(() => {
-    if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("portfolio-view");
-      if (stored === "default" || stored === "artsy" || stored === "brutalist") {
-        return stored;
-      }
-    }
-    return "default";
-  });
-
-  useEffect(() => {
-    localStorage.setItem("portfolio-view", currentView);
-  }, [currentView]);
+  const [currentView, setCurrentView] = useState<ViewType>("default");
 
   const setView = (view: ViewType) => {
     setCurrentView(view);
