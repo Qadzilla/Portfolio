@@ -603,6 +603,7 @@ export default function HomeBrutalistMobile() {
         .brutalist-page {
           background-color: rgb(224, 224, 224);
           min-height: 100vh;
+          min-height: 100dvh;
           font-family: 'Courier New', monospace;
           color: #000;
           display: flex;
@@ -653,13 +654,13 @@ export default function HomeBrutalistMobile() {
           position: relative;
           display: flex;
           gap: 4px;
-          flex-wrap: wrap;
+          flex-wrap: nowrap;
           justify-content: center;
           margin-bottom: 12px;
         }
         .brutalist-nav-btn {
-          padding: 8px 16px;
-          font-size: 13px;
+          padding: 7px 10px;
+          font-size: 12px;
           font-weight: 700;
           font-family: 'Courier New', monospace;
           cursor: pointer;
@@ -670,6 +671,7 @@ export default function HomeBrutalistMobile() {
           border-radius: 6px;
           position: relative;
           z-index: 1;
+          white-space: nowrap;
         }
         .brutalist-nav-btn.active {
           color: #fff;
@@ -690,7 +692,6 @@ export default function HomeBrutalistMobile() {
           display: flex;
           flex-direction: column;
           align-items: center;
-          overflow-y: auto;
         }
         .brutalist-body-container {
           background: #fff;
