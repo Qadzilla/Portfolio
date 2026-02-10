@@ -31,7 +31,7 @@ import {
   SiAnthropic,
 } from "react-icons/si";
 import { TbApi, TbChartBar, TbCurrencyDollar, TbTable, TbBrain, TbCode } from "react-icons/tb";
-import { ExternalLink, Github, Folder, Send, Loader2, GraduationCap, Code, Briefcase, Globe } from "lucide-react";
+import { ExternalLink, Github, Folder, Send, Loader2, GraduationCap, Code, Briefcase, Globe, Linkedin } from "lucide-react";
 
 const contactSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -984,6 +984,43 @@ export default function HomeBrutalist() {
         .brutalist-btn-sm:active {
           transform: translate(1px, 1px);
         }
+
+        /* Footer */
+        .brutalist-footer {
+          display: flex;
+          justify-content: center;
+          gap: 12px;
+          padding: 16px 24px 24px;
+          position: relative;
+          z-index: 50;
+        }
+        .brutalist-footer-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 10px 24px;
+          background: #fff;
+          color: #000;
+          border: 2px solid #000;
+          font-size: 14px;
+          font-weight: 700;
+          font-family: 'Courier New', monospace;
+          cursor: pointer;
+          text-decoration: none;
+          border-radius: 6px;
+          box-shadow: 3px 3px 0px #000;
+          transform: translate(-1px, -1px);
+          transition: all 0.1s;
+        }
+        .brutalist-footer-btn:hover {
+          box-shadow: 0 0 0 #000;
+          transform: translate(0, 0);
+          background: rgb(255, 106, 0);
+          color: #fff;
+        }
+        .brutalist-footer-btn:active {
+          transform: translate(1px, 1px);
+        }
       `}</style>
 
       {/* === 1. Scanline + Noise Overlay === */}
@@ -1119,6 +1156,27 @@ export default function HomeBrutalist() {
 
         </div>{/* end brutalist-content-row */}
       </main>
+
+      <footer className="brutalist-footer">
+        <a
+          href="https://github.com/Qadzilla"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="brutalist-footer-btn"
+        >
+          <Github className="w-4 h-4" />
+          GitHub
+        </a>
+        <a
+          href="https://www.linkedin.com/in/zaid-al-qadi-8a1a4826b/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="brutalist-footer-btn"
+        >
+          <Linkedin className="w-4 h-4" />
+          LinkedIn
+        </a>
+      </footer>
     </div>
   );
 }

@@ -518,11 +518,11 @@ export default function HomeArtsyMobile() {
                 {[...technologies, ...skills].map((tech) => {
                   const Icon = tech.icon;
                   return (
-                    <div key={tech.name} className="flex flex-col items-center gap-2">
-                      <div className="w-12 h-12 rounded-xl bg-white border border-black/10 flex items-center justify-center">
+                    <div key={tech.name} className="flex flex-col items-center justify-center gap-2 aspect-square">
+                      <div className="w-12 h-12 rounded-xl bg-white border border-black/10 flex items-center justify-center shrink-0">
                         <Icon className="w-6 h-6" style={{ color: tech.color }} />
                       </div>
-                      <span className="text-[10px] text-black/60 text-center font-medium">
+                      <span className="text-[10px] text-black/60 text-center font-medium leading-tight">
                         {tech.name}
                       </span>
                     </div>

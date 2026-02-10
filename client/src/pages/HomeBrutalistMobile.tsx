@@ -31,7 +31,7 @@ import {
   SiAnthropic,
 } from "react-icons/si";
 import { TbApi, TbChartBar, TbCurrencyDollar, TbTable, TbBrain, TbCode } from "react-icons/tb";
-import { ExternalLink, Github, Folder, Send, Loader2, GraduationCap, Code, Briefcase, Globe } from "lucide-react";
+import { ExternalLink, Github, Folder, Send, Loader2, GraduationCap, Code, Briefcase, Globe, Linkedin } from "lucide-react";
 
 const contactSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -175,7 +175,7 @@ function MobileTerminalScreen({ activeSection }: { activeSection: SectionId }) {
 
 function AboutSection() {
   return (
-    <div style={{ width: "clamp(280px, 90vw, 500px)" }}>
+    <div style={{ width: "100%" }}>
       <h2 className="brutalist-heading brutalist-glitch" data-text="About Me">About Me</h2>
       <motion.div
         className="brutalist-card mb-4"
@@ -226,7 +226,7 @@ function ProjectsSection() {
   });
 
   return (
-    <div style={{ width: "clamp(280px, 90vw, 500px)" }}>
+    <div style={{ width: "100%" }}>
       <h2 className="brutalist-heading brutalist-glitch" data-text="Featured Projects">Featured Projects</h2>
       {isLoading ? (
         <div className="space-y-4">
@@ -309,7 +309,7 @@ function ProjectsSection() {
 
 function SkillsSection() {
   return (
-    <div style={{ width: "clamp(280px, 90vw, 500px)" }}>
+    <div style={{ width: "100%" }}>
       <h2 className="brutalist-heading brutalist-glitch" data-text="Skills & Technologies">Skills & Technologies</h2>
       <p className="text-center mb-6 text-sm" style={{ fontFamily: "'Courier New', monospace" }}>
         The technologies and tools I use to bring ideas to life.
@@ -320,14 +320,14 @@ function SkillsSection() {
           return (
             <motion.div
               key={tech.name}
-              className="flex flex-col items-center gap-1.5 p-2 brutalist-card brutalist-hoverable"
+              className="flex flex-col items-center justify-center gap-1.5 p-2 brutalist-card brutalist-hoverable aspect-square"
               variants={skillSlamVariants}
               initial="hidden"
               animate="visible"
               custom={i}
             >
-              <Icon className="w-6 h-6" style={{ color: tech.color }} />
-              <span className="text-[10px] text-center font-bold" style={{ fontFamily: "'Courier New', monospace" }}>{tech.name}</span>
+              <Icon className="w-6 h-6 shrink-0" style={{ color: tech.color }} />
+              <span className="text-[10px] text-center font-bold leading-tight" style={{ fontFamily: "'Courier New', monospace" }}>{tech.name}</span>
             </motion.div>
           );
         })}
@@ -371,7 +371,7 @@ function ContactSection() {
   const errors = form.formState.errors;
 
   return (
-    <div style={{ width: "clamp(280px, 90vw, 500px)" }}>
+    <div style={{ width: "100%" }}>
       <h2 className="brutalist-heading brutalist-glitch" data-text="Let's Connect">Let's Connect</h2>
       <p className="text-center mb-4 text-sm" style={{ fontFamily: "'Courier New', monospace" }}>
         Have a question or want to work together? Drop me a message.
@@ -686,7 +686,7 @@ export default function HomeBrutalistMobile() {
         }
         .brutalist-main {
           flex: 1;
-          padding: 12px 8px 24px;
+          padding: 12px 12px 24px;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -698,8 +698,9 @@ export default function HomeBrutalistMobile() {
           box-shadow: 4px 4px 0px #000;
           border-radius: 8px;
           padding: 16px;
-          width: 100%;
+          width: calc(100% - 8px);
           max-width: 500px;
+          box-sizing: border-box;
         }
         .brutalist-heading {
           font-size: 22px;
@@ -817,6 +818,43 @@ export default function HomeBrutalistMobile() {
         .brutalist-btn-sm:active {
           transform: translate(1px, 1px);
         }
+
+        /* Footer */
+        .brutalist-footer {
+          display: flex;
+          justify-content: center;
+          gap: 12px;
+          padding: 16px 12px 24px;
+          position: relative;
+          z-index: 50;
+        }
+        .brutalist-footer-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          padding: 10px 20px;
+          background: #fff;
+          color: #000;
+          border: 2px solid #000;
+          font-size: 13px;
+          font-weight: 700;
+          font-family: 'Courier New', monospace;
+          cursor: pointer;
+          text-decoration: none;
+          border-radius: 6px;
+          box-shadow: 3px 3px 0px #000;
+          transform: translate(-1px, -1px);
+          transition: all 0.1s;
+        }
+        .brutalist-footer-btn:hover {
+          box-shadow: 0 0 0 #000;
+          transform: translate(0, 0);
+          background: rgb(255, 106, 0);
+          color: #fff;
+        }
+        .brutalist-footer-btn:active {
+          transform: translate(1px, 1px);
+        }
       `}</style>
 
       {/* === 1. Scanline + Noise Overlay === */}
@@ -930,6 +968,27 @@ export default function HomeBrutalistMobile() {
           </div>
         </motion.div>
       </main>
+
+      <footer className="brutalist-footer">
+        <a
+          href="https://github.com/Qadzilla"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="brutalist-footer-btn"
+        >
+          <Github className="w-4 h-4" />
+          GitHub
+        </a>
+        <a
+          href="https://www.linkedin.com/in/zaid-al-qadi-8a1a4826b/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="brutalist-footer-btn"
+        >
+          <Linkedin className="w-4 h-4" />
+          LinkedIn
+        </a>
+      </footer>
     </div>
   );
 }
